@@ -1,0 +1,42 @@
+#Load required packages
+library("data.table")
+library(readr)
+library(ggplot2)
+library(multcompView)
+library(dplyr)
+
+
+#Set working directory
+setwd("C:\\Users\\amand\\OneDrive\\Desktop\\")
+#read file
+crenTable = fread("Quick_anova_table.csv")
+
+#Look at headings and structure of the table
+head(crenTable)
+str(crenTable)
+
+#Convert the independent variables to factors
+crenTable$pH <- as.factor(crenTable$pH)
+crenTable$Temp <- as.factor(crenTable$Temp)
+#Check structure again
+str(crenTable)
+
+#Run the anova
+anova <- aov(CL_raw ~ pH*Temp, data = crenTable)
+#Give summary table
+summary(anova)
+
+#Other method with no synergistic effects
+anova2 <- aov(CL_corr ~ pH + Temp, data = crenTable)
+summary(anova2)
+
+#Run the anova
+anova3 <- aov(IPL_raw ~ pH*Temp, data = crenTable)
+#Give summary table
+summary(anova3)
+
+
+#Other method with no synergistic effects
+anova4 <- aov(IPL_corr ~ pH + Temp, data = crenTable)
+summary(anova4)
+
