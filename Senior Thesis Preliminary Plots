@@ -1,0 +1,286 @@
+#Opens three libraries necessary for making data tables, plots, and aggregating data
+library("data.table")
+library("ggplot2")
+library("ggpubr")
+library("ggtext")
+library("lubridate")
+#library(dataRetrieval)
+#library(maps)
+#library(scales)
+
+#file.choose()
+# Set working directory to folder with the data files
+setwd("C:\\Users\\amand\\OneDrive\\Desktop\\Senior Thesis\\Code")
+
+#Import discharge CSV data into data table
+allData = fread("thesis_csv_table_essentials.csv")
+
+
+
+### Theme from Evan - General Final Code 
+theme_evan_facet <- theme_bw() +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    # panel.grid = element_blank(),
+    # legend.position = 'none',
+    panel.border = element_rect(size = 0.5),
+    strip.background = element_rect(fill = 'white'),
+    text = element_text(size=12),
+    axis.text = element_text(size = 12), 
+    plot.title = element_text(size = 13)
+  )
+#Season theme from Evan 
+season_facet <- theme_evan_facet + theme(
+  legend.position = 'none', 
+  strip.background = element_blank(),
+  strip.text = element_text(hjust = 0, margin = margin(0,0,0,0, unit = 'pt'))
+)
+
+
+### SIMPLE PLOTS#######################################################################
+
+########pH v Temp plot
+ggplot(data = allData, aes(x = temp, y = pH)) + 
+  geom_point(pch = 21, size = 5, stroke = 0.2, color = 'black', fill = 'black') + 
+  geom_smooth(method = lm, se = FALSE, size = 2) +
+  stat_regline_equation(label.x=39, label.y=4.6, color = "blue", size = 5)+
+  stat_cor(aes(label=..rr.label..), label.x=42, label.y=5.2, color = "blue", size = 5)+
+  season_facet +
+  labs(x="Temp", y="pH", title="pH v. Temp")+
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))
+  
+
+#### ph v ORP Plot
+ggplot(data = allData, aes(x = orp, y = pH)) + 
+  geom_point(pch = 21, size = 5, stroke = 0.2, color = 'black', fill = 'black') + 
+  geom_smooth(method = lm, se = FALSE, size = 2) +
+  stat_regline_equation(label.x=170, label.y=4.6, color = "blue", size = 5)+
+  stat_cor(aes(label=..rr.label..), label.x=210, label.y=5.2, color = "blue", size = 5)+
+  season_facet +
+  labs(x="ORP", y="pH", title="pH v. ORP")+
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))
+
+#### temp v ORP Plot
+ggplot(data = allData, aes(x = orp, y = temp)) + 
+  geom_point(pch = 21, size = 5, stroke = 0.2, color = 'black', fill = 'black') + 
+  geom_smooth(method = lm, se = FALSE, size = 2) +
+  stat_regline_equation(label.x=-300, label.y=70, color = "blue", size = 5)+
+  stat_cor(aes(label=..rr.label..), label.x=-280, label.y=75, color = "blue", size = 5)+
+  season_facet +
+  labs(x="ORP", y="Temp", title="Temp v. ORP")+
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))
+
+#### IPL Cren v CL Cren Plot
+ggplot(data = allData, aes(x = cren_CL, y = cren_IPL)) + 
+  geom_point(size = 5, stroke = 0.2, fill = 'black') + 
+  geom_smooth(method = lm, se = FALSE, size = 2) +
+  stat_regline_equation(label.x=0.07, label.y=0.2, color = "blue", size = 5)+
+  stat_cor(aes(label=..rr.label..), label.x=0.08, label.y=0.22, color = "blue", size = 5)+
+  season_facet +
+  labs(x="CL Cren", y="IPL Cren", title="IPL v. CL Cren")+
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))
+
+#### CL RI with and without cren comparison
+ggplot(data = allData, aes(x = RI_CL_cren, y = RI_CL_nocren)) + 
+  geom_point(size = 5, stroke = 0.2, fill = 'black') + 
+  geom_smooth(method = lm, se = FALSE, size = 2) +
+  stat_regline_equation(label.x=2.5, label.y=3.3, color = "blue", size = 5)+
+  stat_cor(aes(label=..rr.label..), label.x=2.7, label.y=3.5, color = "blue", size = 5)+
+  season_facet +
+  labs(x="CL RI with Cren", y="CL RI without Cren", title="CL RI with and without Cren")+
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))
+
+
+#### IPL RI with and without cren comparison
+ggplot(data = allData, aes(x = RI_IPL_cren, y = RI_IPL_nocren)) + 
+  geom_point(size = 5, stroke = 0.2, fill = 'black') + 
+  geom_smooth(method = lm, se = FALSE, size = 2) +
+  stat_regline_equation(label.x=2.5, label.y=3.3, color = "blue", size = 5)+
+  stat_cor(aes(label=..rr.label..), label.x=2.7, label.y=3.5, color = "blue", size = 5)+
+  season_facet +
+  labs(x="IPL RI with Cren", y="IPL RI without Cren", title="IPL RI with and without Cren")+
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))
+
+
+
+
+
+
+
+#### CL Cren v pH Plot
+ggplot() +
+  geom_point(data = allData, 
+             pch = 21, size = 5, stroke = 0.2, color = 'black', 
+             aes(x = pH, y = cren_CL, fill = temp)) +
+  scale_fill_gradient(low = "deepskyblue3", high = "red") +
+  season_facet +
+  xlim(0, 10)+
+  ylim(0, .2)+
+  labs(
+    x = 'pH',
+    y = 'CL Rel Abundance Cren',
+    title = "CL Cren v. pH",
+    fill = '**Spring Temperature**<br>(*measured at site*)'
+  ) +
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))+
+  theme(legend.position = c(.1,.6),
+        legend.justification = 'left',
+        legend.key.width = unit(1.5,"cm"),
+        legend.title = element_markdown(),
+        legend.key.size = unit(1.5, "cm"))
+
+
+
+#### CL Cren v temp Plot
+ggplot() +
+  geom_point(data = allData, 
+             pch = 21, size = 5, stroke = 0.2, color = 'black', 
+             aes(x = temp, y = cren_CL, fill = pH)) +
+  scale_fill_gradient(low = "darkmagenta", high = "lavender") +
+  season_facet +
+  #xlim(0, 10)+
+  #ylim(0, .2)+
+  labs(
+    x = 'Temperature',
+    y = 'CL Rel Abundance Cren',
+    title = "CL Cren v. Temp",
+    fill = '**Spring pH**<br>(*measured at site*)'
+  ) +
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))+
+  theme(legend.position = c(.1,.6),
+        legend.justification = 'left',
+        legend.key.width = unit(1.5,"cm"),
+        legend.title = element_markdown(),
+        legend.key.size = unit(1.5, "cm"))
+
+
+
+
+
+#### IPL Cren v pH Plot
+ggplot() +
+  geom_point(data = allData, 
+             pch = 21, size = 5, stroke = 0.2, color = 'black', 
+             aes(x = pH, y = cren_IPL, fill = temp)) +
+  scale_fill_gradient(low = "deepskyblue3", high = "red") +
+  season_facet +
+  xlim(0, 10)+
+  #ylim(0, .4)+
+  labs(
+    x = 'pH',
+    y = 'IPL Rel Abundance Cren',
+    title = "IPL Cren v. pH",
+    fill = '**Spring Temperature**<br>(*measured at site*)'
+  ) +
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))+
+  theme(legend.position = c(.1,.6),
+        legend.justification = 'left',
+        legend.key.width = unit(1.5,"cm"),
+        legend.title = element_markdown(),
+        legend.key.size = unit(1.5, "cm"))
+
+
+
+#### IPL Cren v temp Plot########################
+ggplot() +
+  geom_point(data = allData, 
+             pch = 21, size = 5, stroke = 0.2, color = 'black', 
+             aes(x = temp, y = cren_IPL, fill = pH)) +
+  scale_fill_gradient(low = "darkmagenta", high = "lavender") +
+  season_facet +
+  #xlim(0, 10)+
+  #ylim(0, .2)+
+  labs(
+    x = 'Temperature',
+    y = 'IPL Rel Abundance Cren',
+    title = "IPL Cren v. Temp",
+    fill = '**Spring pH**<br>(*measured at site*)'
+  ) +
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))+
+  theme(legend.position = c(.1,.6),
+        legend.justification = 'left',
+        legend.key.width = unit(1.5,"cm"),
+        legend.title = element_markdown(),
+        legend.key.size = unit(1.5, "cm"))
+
+
+
+######CL and IPL comparison v pH #######################
+ggplot() + 
+  geom_point(data = allData, pch = 21, size = 5, stroke = 3, color = 'black',
+             aes(x = pH, y = cren_CL, fill = temp)) +
+  geom_point(data = allData, pch = 21, size = 5, stroke = 3, color = 'blue',
+             aes(x = pH, y = cren_IPL, fill = temp)) +
+  scale_fill_gradient(low = "deepskyblue3", high = "red") +
+  season_facet +
+  xlim(0, 10)+
+  #ylim(0, .4)+
+  labs(
+    x = 'pH',
+    y = 'Cren Rel Abundance',
+    title = "Cren (CL and IPL) v. pH",
+    fill = '**Spring Temperature**<br>(*measured at site*)'
+  ) +
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))+
+  theme(legend.position = c(.1,.6),
+        legend.justification = 'left',
+        legend.key.width = unit(1.5,"cm"),
+        legend.title = element_markdown(),
+        legend.key.size = unit(1.5, "cm"))
+  
+
+
+
+
+
+
+
+
+
+
+
+######CL AND CREN COMBINED v pH #######################
+ggplot() + 
+  geom_point(data = allData, pch = 21, size = 5, stroke = 0.2, color = 'black',
+             aes(x = pH, y = cren_CL, fill = temp)) +
+  geom_point(data = allData, pch = 21, size = 5, stroke = 0.2, color = 'black',
+             aes(x = pH, y = cren_IPL, fill = temp)) +
+  scale_fill_gradient(low = "deepskyblue3", high = "red") +
+  season_facet +
+  xlim(0, 10)+
+  #ylim(0, .4)+
+  labs(
+    x = 'pH',
+    y = 'Cren Rel Abundance',
+    title = "Cren (CL and IPL) v. pH",
+    fill = '**Spring Temperature**<br>(*measured at site*)'
+  ) +
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))+
+  theme(axis.title=element_text(size=20))+
+  theme(legend.position = c(.1,.6),
+        legend.justification = 'left',
+        legend.key.width = unit(1.5,"cm"),
+        legend.title = element_markdown(),
+        legend.key.size = unit(1.5, "cm"))
+
+
+
+
+
+
+
+
+
