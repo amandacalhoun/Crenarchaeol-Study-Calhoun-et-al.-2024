@@ -663,7 +663,7 @@ ggplot(data = yellowstone, aes(x = spc, y = temp)) +
   theme(axis.title=element_text(size=20))
 
 ironTable = yellowstone[(is.na(fe) == FALSE)]
-ironTable = ironTable[,logfe := -log(fe)]
+ironTable = ironTable[,logfe := log(fe)]
 #### Fe2+ v. pH Plot
 ggplot(data = ironTable, aes(x = pH, y = logfe)) + 
   geom_point(pch = 21, size = 5, stroke = 0.2, color = 'black', fill = 'black') + 
